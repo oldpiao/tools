@@ -1,0 +1,21 @@
+断点调试
+	+ F7  # 单步调试
+	+ F8  # 单步调试不进入函数
+	+ F9  # 到下一个断点
+	+ https://www.jianshu.com/p/64a45714c58c
+
+国内pip
+	+ https://blog.csdn.net/weixin_41004350/article/details/78780527
+	+ 豆瓣：http://pypi.douban.com/simple/
+ 	+ 清华：https://pypi.tuna.tsinghua.edu.cn/simple
+	+ 例：pip install -i https://pypi.tuna.tsinghua.edu.cn/simple requests
+
+jupyter添加Python内核
+	+ https://blog.csdn.net/qq_24924689/article/details/82950676
+	+ https://blog.csdn.net/wangwangstone/article/details/96570064
+	+ 在目标环境安装ipykernel：pip install ipykernel  # 慢可以用国内源
+	+ 第一种：已有环境
+		+ activate env_name
+		+ python -m ipykernel install --name env_name
+	+ 第二种：新建环境
+		+ conda create -n Python27 python=2.7 ipykernel	#在创建环境时为其安装ipykernel

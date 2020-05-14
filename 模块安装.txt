@@ -1,0 +1,21 @@
+win32com
+	+ 名称：
+	+ 作用：
+	+ 命令：pip install pypiwin32
+	+ 介绍：https://blog.csdn.net/qq_41703291/article/details/80433071
+docx
+	+ 名称：
+	+ 作用：操作word
+	+ 命令：pip install python-docx
+	+ 介绍：
+		+ 基本用法：https://www.cnblogs.com/geek-arking/p/9300617.html
+		+ 表格插入：https://www.yinyubo.cn/?p=352
+scrapy:
+	+ 名称：
+	+ 作用：爬虫框架
+	+ 命令：pip install scrapy
+	+ 介绍：
+		+ https://scrapy-chs.readthedocs.io/zh_CN/0.24/intro/tutorial.html  # Scrapy0.24文档
+		+ https://www.jb51.net/article/133687.htm  # scrapy爬虫完整实例
+		+ https://www.jianshu.com/p/6bc5a4641629  # 爬虫框架Scrapy的安装与基本使用
+		+ https://www.cnblogs.com/xinyangsdut/p/7628770.html  # 爬虫案例
