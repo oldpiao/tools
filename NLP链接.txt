@@ -1,0 +1,55 @@
+pip 换源
+	资料：
+		https://blog.csdn.net/yuzaipiaofei/article/details/80891108
+		https://www.cnblogs.com/L521Z/p/11503224.html
+	临时使用，例子: pip install scrapy -i https://pypi.tuna.tsinghua.edu.cn/simple
+	永久修改：
+		pip config set global.index-url https://pypi.mirrors.ustc.edu.cn/simple/ 
+	
+	TensorFlow亲测好用：
+		中国科技大学 https://pypi.mirrors.ustc.edu.cn/simple/ 
+
+conda换源：
+	https://blog.csdn.net/qq_33039859/article/details/81328805
+	https://blog.csdn.net/HelloJinYe/article/details/106660277
+	直接修改.condarc文件：（清华源为例）（安装pytorch时需要第一个pytorch的源）
+		show_channel_urls: true
+		report_errors: true
+		channels:
+		  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/
+		  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
+		  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
+		  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/msys2/
+		  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge
+		  - defaults
+	命令换源：（中科大为例）
+		conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/main/
+		conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/free/
+		conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/conda-forge/
+		conda config --set show_channel_urls: yes
+	删源(换回conda的默认源)
+		conda config --remove-key channels
+	
+
+TensorFlow
+	使用 pip 安装 TensorFlow
+		https://tensorflow.google.cn/install/pip
+	TensorFlow教程：TensorFlow快速入门教程（非常详细）
+		http://c.biancheng.net/tensorflow/
+	
+
+pytorch
+	在官网查找需要安装的版本与命令：https://pytorch.org/
+	例：GPU版本：windows conda python CUDA=10.2
+		conda install pytorch torchvision cudatoolkit=10.2 -c pytorch
+		# 注意官网的命令有-c pytorch参数，但这样会导致命令直接去官网的对应位置下载安装包，换国内源的意义就没有了
+		# 方法有两个：
+			1 换国内源，并删除本地源配置中的defaults行，这样就不会去官网下载了
+			2 换国内源，并删除命令中的-c pytorch
+		conda install pytorch torchvision cudatoolkit=10.2
+
+
+
+
+
+ 

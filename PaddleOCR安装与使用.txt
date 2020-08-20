@@ -1,0 +1,38 @@
+PaddleOCR安装记录：
+
+环境：Centos7_x86_64	Anaconda3(python3.7)
+
+创建虚拟环境：
+	conda areate -n paddleocr python=3.7  # paddleocr为虚拟环境名
+	conda activate paddleocr  # 进入虚拟环境
+
+安装PaddlePaddle(来源：https://www.paddlepaddle.org.cn/install/quick)
+	+ pip安装方法：python3 -m pip install paddlepaddle -i https://mirror.baidu.com/pypi/simple  # 这里安装的CPU版本
+	
+下载项目代码
+	wget https://github.com/PaddlePaddle/PaddleOCR/archive/develop.zip
+	unzip develop.zip  # 解压
+安装项目依赖库
+	pip install -r requirments.txt -i https://mirror.baidu.com/pypi/simple
+安装项目依赖库可能遇到的问题
+	lmdb安装失败
+		+ 单独下载安装会报错：error: command 'gcc' failed with exit status 1
+		+ 原因：缺乏gcc库
+		+ 解决办法：https://www.cnblogs.com/qinzeya/p/13096275.html
+			+ 安装运行库
+				+ yum install gcc libffi-devel python-devel openssl-devel -y
+			+ 若python3是使用yum安装的，则安装python3的devel环境（这里用到anaconda不需要这一步）
+				+ yum python3-devel -y
+应用（来源：https://github.com/PaddlePaddle/PaddleOCR/blob/develop/doc/doc_ch/quickstart.md）
+	下载模型：
+		mkdir inference && cd inference
+		# 下载超轻量级中文OCR模型的检测模型并解压
+		wget https://paddleocr.bj.bcebos.com/ch_models/ch_det_mv3_db_infer.tar && tar xf ch_det_mv3_db_infer.tar
+		# 下载超轻量级中文OCR模型的识别模型并解压
+		wget https://paddleocr.bj.bcebos.com/ch_models/ch_rec_mv3_crnn_infer.tar && tar xf ch_rec_mv3_crnn_infer.tar
+	测试运行：
+		# 预测image_dir指定的图像集合
+		python3 tools/infer/predict_system.py --image_dir="./doc/imgs/" --det_model_dir="./inference/ch_det_mv3_db/"  --rec_model_dir="./inference/ch_rec_mv3_crnn/"
+
+		# 如果想使用CPU进行预测，需设置use_gpu参数为False
+		python3 tools/infer/predict_system.py --image_dir="./doc/imgs/11.jpg" --det_model_dir="./inference/ch_det_mv3_db/"  --rec_model_dir="./inference/ch_rec_mv3_crnn/" --use_gpu=False
