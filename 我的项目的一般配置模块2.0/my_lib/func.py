@@ -1,9 +1,11 @@
 # -*- coding:utf-8 -*-
 import os
+import shutil
+import glob
+import zipfile
 import re
 import json
 import random
-import shutil
 import difflib
 import tempfile
 import subprocess
@@ -418,6 +420,65 @@ def mycopypath(src_path, dst_path):
                 src_file = os.path.join(root, file)
                 shutil.copy(src_file, dst_path)
                 print(src_file)
+
+
+def unzip_file(dir_path, unzip_file_path):
+    """
+    :param dir_path: 需要解压的文件
+    :param unzip_file_path: 解压后存储路径
+    :return:
+    """
+    # 找到压缩文件夹
+    dir_list = glob.glob(dir_path)
+    if dir_list:
+        # 循环zip文件夹
+        for dir_zip in dir_list:
+            # 以读的方式打开
+            with zipfile.ZipFile(dir_zip, 'r') as f:
+                for file in f.namelist():
+                    f.extract(file, path=unzip_file_path)
+            os.remove(dir_zip)
+
+
+def zip_files(dir_path, zip_path):
+    """ 压缩文件夹下的所有文件（会拆出目录结构）
+    :param dir_path: 需要压缩的文件目录
+    :param zip_path: 压缩后的目录
+    :return:
+    """
+    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as f:
+        for root, _, file_names in os.walk(dir_path):
+            for filename in file_names:
+                f.write(os.path.join(root, filename), filename)
+
+
+def zip_dir(dir_path, zip_path):
+    """
+    压缩指定文件夹
+    :param dir_path: 目标文件夹路径
+    :param zip_path: 压缩文件保存路径+xxxx.zip
+    :return: 无
+    """
+    zip = zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED)
+    for path, dirnames, filenames in os.walk(dir_path):
+        # 去掉目标跟路径，只对目标文件夹下边的文件及文件夹进行压缩
+        fpath = path.replace(dir_path, '')
+
+        for filename in filenames:
+            zip.write(os.path.join(path, filename), os.path.join(fpath, filename))
+    zip.close()
+
+
+def del_path(f_path, keep_root=False):
+    """删除文件或目录"""
+    if os.path.isfile(f_path):
+        os.remove(f_path)
+    elif os.path.isdir(f_path):
+        shutil.rmtree(f_path)
+        if keep_root:
+            os.makedirs(f_path)
+    else:
+        raise FileNotFoundError("文件或路径不存在：%s" % f_path)
 
 
 def del_null_dir(f_dir):

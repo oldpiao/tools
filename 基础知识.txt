@@ -27,3 +27,35 @@ pip download  -r requestments.txt  -d  ./pip_packages
 
 pip install --no-index --find-links=d:\packages -r requirements.txt 
 # --find-links指定的是包文件的存放地址，-r指定的是txt文件的位置
+
+# 构建pip包
+https://www.cnblogs.com/gongdiwudu/p/11070798.html
+https://blog.csdn.net/wc781708249/article/details/79596741
+https://www.cnblogs.com/potato-chip/p/9106225.html
+
+# setup.py
+
+import setuptools
+
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
+setuptools.setup(
+    name="example-pkg-your-username",
+    version="0.0.1",
+    author="Example Author",
+    author_email="author@example.com",
+    description="A small example package",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/pypa/sampleproject",
+    packages=setuptools.find_packages(),
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ],
+)
+
+# 创建tar.gz包(sdist)和.whl包(bdist_wheel)
+python setup.py sdist bdist_wheel
