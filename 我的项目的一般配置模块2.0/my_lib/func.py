@@ -9,6 +9,7 @@ import random
 import difflib
 import tempfile
 import subprocess
+import logging
 
 import requests
 from bs4 import BeautifulSoup
@@ -218,7 +219,7 @@ class MyJSON2(object):
         lines_str = "".join([self.json2str(line) for line in lines])
         with open(self.f_path, "w", encoding='utf-8') as f:
             f.write(lines_str)
-        print('替换成功：%d行' % len(lines))
+        logging.info('替换成功：%d行' % len(lines))
 
 
 class MyJSON3(MyJSON2):
