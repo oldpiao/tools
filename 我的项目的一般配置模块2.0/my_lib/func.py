@@ -609,37 +609,138 @@ class Other(object):
 
 
 # -------------好用算法----------------------
+class IntBining(object):
+    """一个int型的分箱模块，传入箱的大小，自动分箱"""
+    def __init__(self, end, begin=0, box_num=10, bin_type="simple"):
+        """
+        :param end:
+        :param begin:
+        :param box_num:
+        :param bin_type: simple, even
+        """
+        assert end - begin >= box_num
+        bins = {
+            "simple": self.simple_bins,
+            "even": self.even_bins,
+        }
+        self.end = end
+        self.begin = begin
+        self.box_num = int(box_num)
+        self.bin = bins[bin_type](self.end, begin=self.begin, box_num=self.box_num)
 
+    def simple_bins(self, end, begin=0, box_num=10):
+        """最后一个箱中承担多出的所有数据"""
+        my_len = (end - begin) // box_num
+        result = []
+        begin_ = begin
+        for i in range(1, box_num + 1):
+            end_ = my_len + begin_
+            result.append([begin_, end_])
+            begin_ = end_
+        result[-1][-1] = end
+        return result
 
-def bining1(end, begin=0, xiang=10):
-    """最后一个箱中承担多出的所有数据"""
-    my_len = (end - begin)//xiang
-    result = []
-    begin_ = begin
-    for i in range(1, xiang+1):
-        end_ = my_len * i
-        result.append([begin_, end_])
-        begin_ = end_
-    result[-1][-1] = end
-    return result
+    def even_bins(self, end, begin=0, box_num=10):
+        """均匀的分箱，保证分箱后的数据数量差小于1"""
+        my_len = (end - begin) // box_num
+        my_remain = (end - begin) % box_num
+        result = []
+        begin_ = begin
+        for i in range(1, box_num + 1):
+            if i <= my_remain:
+                end_ = begin_ + my_len + 1
+            else:
+                end_ = begin_ + my_len
+            result.append([begin_, end_])
+            begin_ = end_
+        result[-1][-1] = end
+        return result
 
+    def str(self):
+        return ["(%d, %d]" % (begin, end) for begin, end in self.bin]
 
-def bining2(end, begin=0, xiang=10):
-    """保证分箱后的数据数量差小于1"""
-    my_len = (end - begin)//xiang
-    my_remain = (end - begin) % xiang
-    result = []
-    begin_ = begin
-    for i in range(1, xiang+1):
-        if i <= my_remain:
-            end_ = begin_ + my_len + 1
-        else:
-            end_ = begin_ + my_len
-        result.append([begin_, end_])
-        begin_ = end_
-    result[-1][-1] = end
-    return result
+    def __len__(self):
+        return len(self.bin)
 
+    def __getitem__(self, item):
+        n = self.box_num // 2
+        while True:
+            assert n >= 0
+            if item <= self.bin[n][0]:
+                n -= 1
+            elif item > self.bin[n][1]:
+                n += 1
+            else:
+                return n
+
+    def __call__(self, n=None, *args, **kwargs):
+        return self.bin[n]
+    """一个int型的分箱模块，传入箱的大小，自动分箱"""
+    def __init__(self, end, begin=0, box_num=10, bin_type="simple"):
+        """
+        :param end:
+        :param begin:
+        :param box_num:
+        :param bin_type: simple, even
+        """
+        assert end - begin >= box_num
+        bins = {
+            "simple": self.simple_bins,
+            "even": self.even_bins,
+        }
+        self.end = end
+        self.begin = begin
+        self.box_num = int(box_num)
+        self.bin = bins[bin_type](self.end, begin=self.begin, box_num=self.box_num)
+
+    def simple_bins(self, end, begin=0, box_num=10):
+        """最后一个箱中承担多出的所有数据"""
+        my_len = (end - begin) // box_num
+        result = []
+        begin_ = begin
+        for i in range(1, box_num + 1):
+            end_ = my_len + begin_
+            result.append([begin_, end_])
+            begin_ = end_
+        result[-1][-1] = end
+        return result
+
+    def even_bins(self, end, begin=0, box_num=10):
+        """均匀的分箱，保证分箱后的数据数量差小于1"""
+        my_len = (end - begin) // box_num
+        my_remain = (end - begin) % box_num
+        result = []
+        begin_ = begin
+        for i in range(1, box_num + 1):
+            if i <= my_remain:
+                end_ = begin_ + my_len + 1
+            else:
+                end_ = begin_ + my_len
+            result.append([begin_, end_])
+            begin_ = end_
+        result[-1][-1] = end
+        return result
+
+    def str(self):
+        return ["[%d, %d)" % (begin, end) for begin, end in self.bin]
+
+    def __len__(self):
+        return len(self.bin)
+
+    def __getitem__(self, item):
+        n = self.box_num // 2
+        while True:
+            assert n >= 0
+            if item < self.bin[n][0]:
+                n -= 1
+            elif item >= self.bin[n][1]:
+                n += 1
+            else:
+                return n
+
+    def __call__(self, n=None, *args, **kwargs):
+        return self.bin[n]
+		
 
 def random_bining(data: list, xiang=5):
     """将数据随机分成N分"""
@@ -721,6 +822,32 @@ def order_title(numbers, retry=False):
 	
 
 # -------------好用算法----------------------
+def read_csv(filepath_or_buffer, line_num, sep=",", header=True, encoding='utf-8'):
+    """读取内容中有回车的csv文件"""
+    with open(filepath_or_buffer, 'r', encoding=encoding) as f:
+        data = f.read()
+    table, line = [], []
+    cells = data.split(sep)
+    for n, cell in enumerate(cells):
+        if len(line) == line_num - 1:
+            if n == len(cells) - 1:  # 最后一个元素，允许没有\n
+                line.append(cell)
+                table.append(line)
+                line = []
+            else:
+                key = cell.rfind("\n")
+                if key != -1:
+                    line.append(cell[:key])
+                    table.append(line)
+                    line = [cell[key + 1:]]
+                else:
+                    raise Exception("无法正确的解析表格！")
+        else:
+            line.append(cell)
+    if header:
+        return pd.DataFrame(table[1:], columns=table[0])
+    else:
+        return pd.DataFrame(table)
 
 
 def deal_excel(df):

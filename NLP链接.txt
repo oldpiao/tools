@@ -29,6 +29,7 @@ conda换源：
 		conda config --set show_channel_urls: yes
 	删源(换回conda的默认源)
 		conda config --remove-key channels
+	注：在使用自定义源的情况下无法创建新的虚拟环境，我也不知道为什么
 	
 
 TensorFlow

@@ -1,0 +1,3 @@
+# 当参数值改变时，启动该方法
+from traitlets import observe
+@observe('_counter')
