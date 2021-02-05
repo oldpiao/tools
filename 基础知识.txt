@@ -20,12 +20,12 @@ jupyter添加Python内核
 	+ 第二种：新建环境
 		+ conda create -n Python27 python=2.7 ipykernel	#在创建环境时为其安装ipykernel
 
-# pip freee的意思是查看当前python安装了哪些库，保存在requestments.txt中
-pip freeze > requestments.txt
-# 从当前环境的网络中下载requestments.txt中写的包，下载到当前目录下的pip_packages目录中，这时候你会发现，里面有很多依赖，还有一些whl文件
-pip download  -r requestments.txt  -d  ./pip_packages    
+# pip freee的意思是查看当前python安装了哪些库，保存在requirements.txt 中
+pip freeze > requirements.txt 
+# 从当前环境的网络中下载requirements.txt 中写的包，下载到当前目录下的pip_packages目录中，这时候你会发现，里面有很多依赖，还有一些whl文件
+pip download  -r requirements.txt  -d  ./pip_packages    
 
-pip install --no-index --find-links=d:\packages -r requirements.txt 
+pip install --no-index --find-links=d:\packages -r requirements.txt
 # --find-links指定的是包文件的存放地址，-r指定的是txt文件的位置
 
 # 构建pip包
