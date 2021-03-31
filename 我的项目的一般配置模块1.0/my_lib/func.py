@@ -158,11 +158,16 @@ class MyJSON2(object):
     """以行字符串的形式逐行存储，以json格式逐行读取"""
     def __init__(self, f_path):
         self.f_path = f_path
-
-    def addline(self, data):
-        with open(self.f_path, "a", encoding='utf-8') as f:
-            f.write(json.dumps(data, ensure_ascii=False))
-            f.write('\n')
+		
+	def readlines_str(self, encoding='utf-8'):
+        with open(self.f_path, 'r', encoding=encoding) as f:
+            lines = f.readlines()
+        for line in lines:
+            yield line
+    
+    def readlines(self, encoding='utf-8'):
+        for line in self.readlines_str(encoding):
+            yield json.loads(line)
 
     def addline(self, data):
         """未经处理的列表"""
