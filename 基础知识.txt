@@ -19,6 +19,8 @@ jupyter添加Python内核
 		+ python -m ipykernel install --name env_name
 	+ 第二种：新建环境
 		+ conda create -n Python27 python=2.7 ipykernel	#在创建环境时为其安装ipykernel
+git
+	+ https://www.liaoxuefeng.com/wiki/896043488029600/900003767775424
 
 # pip freee的意思是查看当前python安装了哪些库，保存在requirements.txt 中
 pip freeze > requirements.txt 

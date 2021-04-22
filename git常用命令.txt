@@ -1,0 +1,28 @@
+廖雪峰git：https://www.liaoxuefeng.com/wiki/896043488029600/900003767775424
+查看所有分支：https://www.it1352.com/796040.html
+git本地代码回滚：https://www.cnblogs.com/-constructor/p/12268021.html
+
+
+git log  # 查看日志
+git reset --hard 7d72d974a9ed718dc1f50194879d4409a9f5db4b  # 找到需要回滚的commit
+git push -f  # 同时回滚远程
+
+git clone  https://15522020095:password@gitee.com/picture-rabbit/event_extraction.git  # 使用用户名密码克隆远程项目到本地
+git clone -b dev5 https://git.coding.net/aiyongbao/tradepc.git   # 克隆支线
+
+
+gitk master origin/master origin/model_choice  # 查看指定支线
+gitk --all  # 查看所有支线
+
+git branch  # 查看支线树
+git pull
+git push
+git push -u origin model_choice
+git commit -m "模型选择支线完成"
+git add .
+git merge model_choice  # 合并支线model_choice到当前
+
+
+git switch -c model_choice  # 创建支线
+git switch model_choice  # 进入支线
+git push——set-upstream origin add_feature  # 当前分支add_feature没有上游分支。要推送当前分支并将远程端设置为上游
