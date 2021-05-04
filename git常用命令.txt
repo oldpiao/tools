@@ -4,6 +4,7 @@ git本地代码回滚：https://www.cnblogs.com/-constructor/p/12268021.html
 
 
 git log  # 查看日志
+git reflog  # 查看日志
 git reset --hard 7d72d974a9ed718dc1f50194879d4409a9f5db4b  # 找到需要回滚的commit
 git push -f  # 同时回滚远程
 
@@ -21,8 +22,8 @@ git push -u origin model_choice
 git commit -m "模型选择支线完成"
 git add .
 git merge model_choice  # 合并支线model_choice到当前
-
+git branch -d dev  # 删除分支
 
 git switch -c model_choice  # 创建支线
 git switch model_choice  # 进入支线
-git push——set-upstream origin add_feature  # 当前分支add_feature没有上游分支。要推送当前分支并将远程端设置为上游
+git push --set-upstream origin add_feature  # 当前分支add_feature没有上游分支。要推送当前分支并将远程端设置为上游

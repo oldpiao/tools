@@ -277,6 +277,18 @@ def get_child_dirs(dsc_dir):
     return child_dirs
 
 
+def clear_pycache(filepath):
+    files = os.listdir(filepath)
+    for fd in files:
+        cur_path = os.path.join(filepath, fd)            
+        if os.path.isdir(cur_path):
+            if fd == "__pycache__":
+                print("rm %s -rf" % cur_path)
+                os.system("rm %s -rf" % cur_path)
+            else:
+                clear_pycache(cur_path)
+
+
 def get_files(file_dir, second=''):
     """轮训获取路径下的所有文件，会自动查询进一步的路径并返回拼接后的相对路径文件名"""
     for f in os.listdir(file_dir):
