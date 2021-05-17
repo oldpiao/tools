@@ -310,6 +310,8 @@ def mymovefile(srcfile, dstfile):
         shutil.move(srcfile, dstfile)  # 移动文件
         print("move %s -> %s" % (srcfile, dstfile))
 
+# shutil.move(“oldpos”,”newpos”)  # 移动文件夹
+# shutil.rmtree(history_output_dir)  # 删除文件夹
 
 def mycopyfile(srcfile, dstfile):
     """复制文件"""
@@ -347,6 +349,86 @@ def save_file(data, file, mode='w'):
     with open(file, mode) as f:
         f.write(data)
     print("save file %s" % file)
+
+
+def unzip_file(fpath, suffixs=None):
+    """"""
+    def judge_suffix(fname):
+        if suffixs is None:
+            return True
+        for suffix in suffixs:
+            if fname[-len(suffix):].lower() == suffix:
+                return True
+        return False
+    res = {}
+    with zipfile.ZipFile(fpath, mode='r') as zfile:  # 只读方式打开压缩包
+        for name in zfile.namelist():  # 获取zip文档内所有文件的名称列表
+            if not judge_suffix(name):
+                continue
+            # print(name.encode('cp437').decode('gbk'))  # 如果遇到中文文件名编码问题，添加此行代码中的方法解决
+            with zfile.open(name, mode='r') as image_file:
+                content = image_file.read()
+                res[name] = content
+    return res
+
+
+def unzip_file2file(dir_path, unzip_file_path):
+    """
+    :param dir_path: 需要解压的文件
+    :param unzip_file_path: 解压后存储路径
+    :return:
+    """
+    # 找到压缩文件夹
+    dir_list = glob.glob(dir_path)
+    if dir_list:
+        # 循环zip文件夹
+        for dir_zip in dir_list:
+            # 以读的方式打开
+            with zipfile.ZipFile(dir_zip, 'r') as f:
+                for file in f.namelist():
+                    f.extract(file, path=unzip_file_path)
+            os.remove(dir_zip)
+
+
+def default_zip_name(f_dir):
+    """做成临时文件，避免无法删除造成的影响"""
+    if f_dir[-1] in ['/', '\\']:
+        prefix = os.path.split(f_dir[:-1])[1]
+    else:
+        prefix = os.path.split(f_dir)[1]
+    return prefix + '.zip'
+
+
+def zip_files(root_dir, zip_path, files=None):
+    """
+    压缩指定文件夹
+    :param root_dir: 目标文件夹路径
+    :param zip_path: 压缩文件保存路径+xxxx.zip
+    :param files: 指定压缩文件夹下的哪些文件
+    :return:
+    """
+    if files is None:
+        files = [""]  # 压缩root_dir下的全部文件
+    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zip:
+        for file in files:
+            abs_path = os.path.join(root_dir, file)
+            if os.path.isdir(abs_path):
+                for f_name in get_files(abs_path):
+                    zip.write(os.path.join(abs_path, f_name), os.path.join(file, f_name))
+            else:
+                zip.write(abs_path, file)
+
+
+def zip_files2(dir_path, zip_path):
+    """ 压缩文件夹下的所有文件（会拆出目录结构）
+    :param dir_path: 需要压缩的文件目录
+    :param zip_path: 压缩后的目录
+    :return:
+    """
+    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as f:
+        for root, _, file_names in os.walk(dir_path):
+            for filename in file_names:
+                f.write(os.path.join(root, filename), filename)
 
 
 def join_url(host, path, *args):

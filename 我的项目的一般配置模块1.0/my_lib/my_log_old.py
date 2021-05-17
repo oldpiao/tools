@@ -5,21 +5,17 @@ import time
 import os
 
 
-__all__ = ["Log", "remove_all_log"]
+cur_path = os.path.dirname(os.path.realpath(__file__))
+log_path = os.path.join(os.path.dirname(cur_path), 'logs')
+# 如果不存在这个logs文件夹，就自动创建一个
+if not os.path.exists(log_path):
+    os.mkdir(log_path)
 
 
 class Log(object):
 
-    def __init__(self, level='debug', logs_dir=None):
+    def __init__(self, level='debug'):
         # 文件的命名
-        if logs_dir is None:
-            cur_path = os.path.dirname(os.path.realpath(__file__))
-            self.logs_dir = os.path.join(os.path.dirname(cur_path), 'logs')
-        else:
-            self.logs_dir = logs_dir
-        # 如果不存在这个logs文件夹，就自动创建一个
-        if not os.path.exists(self.logs_dir):
-            os.mkdir(self.logs_dir)
         level = level.lower()
         self.levels = {
             "debug": logging.DEBUG,
@@ -38,13 +34,13 @@ class Log(object):
         self.formatter = logging.Formatter('[%(asctime)s] - %(filename)s] - %(levelname)s: %(message)s')
 
     @property
-    def log_path(self):
+    def logname(self):
         # 会随时间改变
-        return os.path.join(self.logs_dir, '%s.log' % time.strftime('%Y_%m_%d'))
+        return os.path.join(log_path, '%s.log' % time.strftime('%Y_%m_%d'))
 
     def __console(self, level, message):
         # 创建一个FileHandler，用于写到本地
-        fh = logging.FileHandler(self.log_path, 'a', encoding='utf-8')  # 这个是python3的
+        fh = logging.FileHandler(self.logname, 'a', encoding='utf-8')  # 这个是python3的
         fh.setLevel(self.level)
         fh.setFormatter(self.formatter)
         self.logger.addHandler(fh)
@@ -82,7 +78,7 @@ class Log(object):
         self.__console('error', message)
 
 
-def remove_all_log(f_dir=os.path.dirname(os.path.realpath(__file__))):
+def remove_all_log(f_dir=ROOT_DIR_P):
     """删除日志"""
     for i in os.listdir(f_dir):
         if os.path.isdir(os.path.join(f_dir, i)):
