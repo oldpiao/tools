@@ -19,7 +19,9 @@ import pandas as pd
 
 
 def md5_id(text: str):
-    """MD5加密，可用于生成id"""
+    """MD5加密，可用于生成id
+    https://www.cnblogs.com/lanston1/p/11025881.html
+    """
     m = hashlib.md5()
     m.update(text.encode("utf-8"))
     return m.hexdigest()
