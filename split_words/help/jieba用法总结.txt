@@ -1,0 +1,22 @@
+import jieba
+
+jieba.XXX  # 单例模式，使用该方式调用分词器，配置是通用的
+tokenizer = jieba.Tokenizer()  # 直接调用分词器，可以更灵活的配置词典
+dt.FREQ  # 分词词典（对这个参数理解不全面，不建议使用）
+dt.user_word_tag_tab  # 用户分词词典
+
+
+import jieba.posseg as peg
+
+# 高级分词器，建立在基础分类器上，加入了词性解析的功能
+# 单例模式，且会和jieba.XXX互相影响
+peg.XXX
+
+# 和jieba.XXX使用相同的词库，但词性解析等可以单独配置
+dt = POSTokenizer(jieba.dt)  # 高级分词器，
+
+# 完全独立的分类器，不会互相影响
+# 使用dt = POSTokenizer()时默认即为该模式
+dt = jieba.Tokenizer()
+dt = POSTokenizer(dt)
+

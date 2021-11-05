@@ -149,17 +149,25 @@ class MyJSON(object):
     """以行字符串的形式逐行存储，以json格式逐行读取"""
     def __init__(self, f_path):
         self.f_path = f_path
+        self.init()
 
     def init(self):
         if os.path.isfile(self.f_path):
-            data = self.read_json()
-            return data
+            return self
         f_dir = os.path.dirname(self.f_path)
         if f_dir != '' and not os.path.isdir(f_dir):
             # 没有文件存储路径建立一个
             os.makedirs(os.path.dirname(self.f_path))
-        return None
+        open(self.f_path, 'wb').close()
+        return self
 
+    def reset(self):
+        if os.path.isfile(self.f_path):
+            open(self.f_path, 'w').close()
+        elif not os.path.isdir(os.path.split(self.f_path)[0]):
+            os.makedirs(os.path.split(self.f_path)[0])
+        return self
+        
     def read_json(self):
         with open(self.f_path, "r", encoding='utf-8') as f:
             data = f.read()
@@ -177,6 +185,24 @@ class MyJSON2(object):
     """以行字符串的形式逐行存储，以json格式逐行读取"""
     def __init__(self, f_path):
         self.f_path = f_path
+        self.init()
+
+    def init(self):
+        if os.path.isfile(self.f_path):
+            return self
+        f_dir = os.path.dirname(self.f_path)
+        if f_dir != '' and not os.path.isdir(f_dir):
+            # 没有文件存储路径建立一个
+            os.makedirs(os.path.dirname(self.f_path))
+        open(self.f_path, 'wb').close()
+        return self
+
+    def reset(self):
+        if os.path.isfile(self.f_path):
+            open(self.f_path, 'w').close()
+        elif not os.path.isdir(os.path.split(self.f_path)[0]):
+            os.makedirs(os.path.split(self.f_path)[0])
+        return self
 
     def json2str(self, data):
         return json.dumps(data, ensure_ascii=False) + '\n'
@@ -206,11 +232,6 @@ class MyJSON2(object):
                 f2.writelines(lines[:n]+lines[n+1:])
         return json.loads(lines[n])
 
-    def len(self):
-        with open(self.f_path, "r", encoding='utf-8') as f1:
-            lines = [i for i in f1.readlines() if i.strip() != ""]
-        return len(lines)
-
     def covered_writing(self, lines):
         """
         覆盖写入，用新内容覆盖旧的内容，
@@ -220,6 +241,11 @@ class MyJSON2(object):
         with open(self.f_path, "w", encoding='utf-8') as f:
             f.write(lines_str)
         logging.info('替换成功：%d行' % len(lines))
+
+    def __len__(self):
+        with open(self.f_path, "r", encoding='utf-8') as f1:
+            lines = [i for i in f1.readlines() if i.strip() != ""]
+        return len(lines)
 
 
 class MyJSON3(MyJSON2):
@@ -269,6 +295,88 @@ class MyJSON3(MyJSON2):
         self.judge_full()
         super(MyJSON3, self).addline(data)
         self.num += 1
+        
+
+class LineFile(object):
+    """以行字符串的形式逐行存储，以json格式逐行读取"""
+    def __init__(self, f_path):
+        self.f_path = f_path
+        self.init()
+
+    def init(self):
+        if os.path.isfile(self.f_path):
+            return self
+        f_dir = os.path.dirname(self.f_path)
+        if f_dir != '' and not os.path.isdir(f_dir):
+            # 没有文件存储路径建立一个
+            os.makedirs(os.path.dirname(self.f_path))
+        open(self.f_path, 'wb').close()
+        return self
+
+    def reset(self):
+        if os.path.isfile(self.f_path):
+            open(self.f_path, 'w').close()
+        elif not os.path.isdir(os.path.split(self.f_path)[0]):
+            os.makedirs(os.path.split(self.f_path)[0])
+        return self
+
+    def json2str(self, data):
+        return json.dumps(data, ensure_ascii=False)
+
+    def add_json_line(self, data: (list, dict)):
+        """未经处理的列表"""
+        self.add_line(self.json2str(data))
+
+    def add_line(self, data: str):
+        """已处理成json格式的"""
+        with open(self.f_path, "a", encoding='utf-8') as f:
+            f.write(data + "\n")
+
+    def read_json_line(self, n=None):
+        for line in self.read_line(n):
+            yield json.loads(line)
+
+    def read_line(self, n=None, filter_comments=True):
+        with open(self.f_path, "r", encoding='utf-8') as f:
+            lines = f.readlines()
+        for line in lines[n:]:
+            line = line.strip()
+            if line == "":
+                continue
+            if filter_comments and line[0] == "#":
+                continue
+            yield line
+
+    def pop(self, n=-1):
+        """空行不算行"""
+        with open(self.f_path, "r", encoding='utf-8') as f1:
+            lines = [i for i in f1.readlines() if i.strip() != ""]
+        with open(self.f_path, "w", encoding='utf-8') as f2:
+            if n == -1:
+                f2.writelines(lines[:n])
+            else:
+                f2.writelines(lines[:n]+lines[n+1:])
+        return json.loads(lines[n])
+
+    def covered_writing(self, lines):
+        """
+        覆盖写入，用新内容覆盖旧的内容，
+        可以应用于修改时，对文件内容进行了修改，之后重写写回文件中
+        """
+        with open(self.f_path, "w", encoding='utf-8') as f:
+            f.write("\n".join(lines) + "\n")
+        logging.info('替换成功：%d行' % len(lines))
+
+    def covered_writing_json(self, lines):
+        """
+        覆盖写入，用新内容覆盖旧的内容，
+        可以应用于修改时，对文件内容进行了修改，之后重写写回文件中
+        """
+        lines = [self.json2str(line) for line in lines]
+        self.covered_writing(lines)
+
+    def __len__(self):
+        return len(list(self.read_line()))
 
 
 def loads(string, strict=True, *args, **kwargs):
@@ -284,6 +392,42 @@ def loads(string, strict=True, *args, **kwargs):
         else:
             raise e
     return dict_infos
+
+
+def mkdirs(func):
+    def _mkdirs(f_path, *args, **kwargs):
+        f_dir, f_name = os.path.split(f_path)
+        if not os.path.isdir(f_dir):
+            os.makedirs(f_dir)
+        return func(f_path, *args, **kwargs)
+    return _mkdirs
+
+
+def read_lines(f_path, is_json=False, encoding='utf-8'):
+    with open(f_path, 'r', encoding=encoding) as f:
+        lines = f.readlines()
+    if is_json:
+        for line in lines:
+            yield json.loads(line.strip())
+    else:
+        for line in lines:
+            yield line.strip()
+
+
+@mkdirs
+def write_lines(save_path, datas, is_json=True, encoding='utf-8'):
+    if is_json:
+        datas = [json.dumps(data, ensure_ascii=False) for data in datas]
+    datas_str = "\n".join(datas)
+    with open(save_path, 'w', encoding=encoding) as f:
+        f.write(datas_str)
+        
+
+@mkdirs
+def write_file(f_path, data, encoding="utf-8"):
+    with open(f_path, "w", encoding=encoding) as f:
+        f.write(data)
+
 
 
 def get_doc(doc_file, word, remove_doc=False, retry=True):
@@ -373,6 +517,19 @@ def get_child_dirs(dsc_dir):
     return child_dirs
 
 
+def clear_pycache(filepath):
+    files = os.listdir(filepath)
+    for fd in files:
+        cur_path = os.path.join(filepath, fd)            
+        if os.path.isdir(cur_path):
+            if fd == "__pycache__":
+                print("rm %s -rf" % cur_path)
+                print("rm %s -rf" % cur_path)
+                os.system("rm %s -rf" % cur_path)
+            else:
+                clear_pycache(cur_path)
+
+
 def get_files(file_dir, second=''):
     """轮训获取路径下的所有文件，会自动查询进一步的路径并返回拼接后的相对路径文件名"""
     for f in os.listdir(file_dir):
@@ -394,6 +551,8 @@ def mymovefile(srcfile, dstfile):
         shutil.move(srcfile, dstfile)  # 移动文件
         print("move %s -> %s" % (srcfile, dstfile))
 
+# shutil.move(“oldpos”,”newpos”)  # 移动文件夹
+# shutil.rmtree(history_output_dir)  # 删除文件夹
 
 def mycopyfile(srcfile, dstfile):
     """复制文件"""
@@ -422,8 +581,64 @@ def mycopypath(src_path, dst_path):
                 shutil.copy(src_file, dst_path)
                 print(src_file)
 
+def save_file(data, file, mode='w'):
+    """保存文件"""
+    fpath, fname = os.path.split(file)  # 分离文件名和路径
+    if not os.path.exists(fpath):
+        os.makedirs(fpath)  # 创建路径
+    with open(file, mode) as f:
+        f.write(data)
+    print("save file %s" % file)
+ 
+ 
+ def verify_file(f_path, name_template="{}({}){}"):
+    """
+    验证文件是否存在，如果不存在则重命名
+    Args:
+        f_path: 待验证的文件路径
+        name_template: 重命名模板，需要三个大括号，用于format填参，分别为：文件名，序号，文件后缀
 
-def unzip_file(dir_path, unzip_file_path):
+    Returns:
+
+    """
+    if os.path.isfile(f_path):
+        status = input("文件已存在，是否覆盖/重命名（yes/no）")
+        if status.lower() in ["yes", "y"]:
+            pass
+        else:
+            f_name, suffix = os.path.splitext(f_path)
+            n = 1
+            while True:
+                new_save_path = name_template.format(f_name, n, suffix)
+                if not os.path.isfile(new_save_path):
+                    f_path = new_save_path
+                    break
+                n += 1
+    return f_path
+
+
+def unzip_file(fpath, suffixs=None):
+    """"""
+    def judge_suffix(fname):
+        if suffixs is None:
+            return True
+        for suffix in suffixs:
+            if fname[-len(suffix):].lower() == suffix:
+                return True
+        return False
+    res = {}
+    with zipfile.ZipFile(fpath, mode='r') as zfile:  # 只读方式打开压缩包
+        for name in zfile.namelist():  # 获取zip文档内所有文件的名称列表
+            if not judge_suffix(name):
+                continue
+            # print(name.encode('cp437').decode('gbk'))  # 如果遇到中文文件名编码问题，添加此行代码中的方法解决
+            with zfile.open(name, mode='r') as image_file:
+                content = image_file.read()
+                res[name] = content
+    return res
+
+
+def unzip_file2file(dir_path, unzip_file_path):
     """
     :param dir_path: 需要解压的文件
     :param unzip_file_path: 解压后存储路径
@@ -441,7 +656,36 @@ def unzip_file(dir_path, unzip_file_path):
             os.remove(dir_zip)
 
 
-def zip_files(dir_path, zip_path):
+def default_zip_name(f_dir):
+    """做成临时文件，避免无法删除造成的影响"""
+    if f_dir[-1] in ['/', '\\']:
+        prefix = os.path.split(f_dir[:-1])[1]
+    else:
+        prefix = os.path.split(f_dir)[1]
+    return prefix + '.zip'
+
+
+def zip_files(root_dir, zip_path, files=None):
+    """
+    压缩指定文件夹
+    :param root_dir: 目标文件夹路径
+    :param zip_path: 压缩文件保存路径+xxxx.zip
+    :param files: 指定压缩文件夹下的哪些文件
+    :return:
+    """
+    if files is None:
+        files = [""]  # 压缩root_dir下的全部文件
+    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zip:
+        for file in files:
+            abs_path = os.path.join(root_dir, file)
+            if os.path.isdir(abs_path):
+                for f_name in get_files(abs_path):
+                    zip.write(os.path.join(abs_path, f_name), os.path.join(file, f_name))
+            else:
+                zip.write(abs_path, file)
+
+
+def zip_files2(dir_path, zip_path):
     """ 压缩文件夹下的所有文件（会拆出目录结构）
     :param dir_path: 需要压缩的文件目录
     :param zip_path: 压缩后的目录
@@ -508,6 +752,36 @@ def save_file(data, file, mode='w'):
     with open(file, mode) as f:
         f.write(data)
     print("save file %s" % file)
+
+
+def cut_sentence(text):
+    """切分句子"""
+    sentence_lis = []
+    chars = list("。?？!！\n")
+    for char in text:
+        sentence_lis.append(char)
+        if char in chars:
+            yield "".join(sentence_lis)
+            sentence_lis = []
+    if len(sentence_lis) != 0:
+        yield "".join(sentence_lis)
+
+
+def get_example_sentence(content: str, begin: int, end=None):
+    """从content中在begin和end位置向前向后找到句子的开头和结尾"""
+    end = end or begin
+    res = "【{}】".format(content[begin: end])
+    for char in content[:begin][::-1]:
+        if char in "。？?！!\n":
+            break
+        res = char + res
+    for char in content[end:]:
+        if char in "\n":
+            break
+        res = res + char
+        if char in "。？?！!":
+            break
+    return res
 
 
 def join_url(host, path, *args):
@@ -792,6 +1066,47 @@ def randomcolor():
     return "#" + color
 
 
+def get_n_hls_colors(num):
+    """生成多个hls颜色"""
+    hls_colors = []
+    i = 0
+    step = 360.0 / num
+    while i < 360:
+        h = i
+        s = 90 + random.random() * 10
+        l = 50 + random.random() * 10
+        _hlsc = [h / 360.0, l / 100.0, s / 100.0]
+        hls_colors.append(_hlsc)
+        i += step
+    return hls_colors
+
+
+def random_colors(num):
+    """生成多个差别较大的颜色"""
+    rgb_colors = []
+    if num < 1:
+        return rgb_colors
+    hls_colors = get_n_hls_colors(num)
+    for hlsc in hls_colors:
+        _r, _g, _b = colorsys.hls_to_rgb(hlsc[0], hlsc[1], hlsc[2])
+        r, g, b = [int(x * 255.0) for x in (_r, _g, _b)]
+        rgb_colors.append([r, g, b])
+
+    return rgb_colors
+
+
+def random_colors_str(num):
+    colors = []
+    for color in random_colors(num):
+        str_color = "#"
+        for i in color:
+            str_hex_i = str(hex(i))[2:]
+            str_hex_i = "0" * (2-len(str_hex_i)) + str_hex_i
+            str_color += str_hex_i
+        colors.append(str_color)
+    return colors
+
+
 def chinese_num():
     one = True
     for bai in ['', '一百', '二百', '三百', '四百', '五百', '六百', '七百', '八百', '九百']:
@@ -860,6 +1175,52 @@ def deal_excel(df):
     return df
 
 
+def read_excel(excel_path, header=0, index_col=None):
+    dfs = pd.ExcelFile(excel_path)
+    for sheet_name in dfs.sheet_names:
+        yield sheet_name, dfs.parse(sheet_name, header=header, index_col=index_col)
+
+
+def to_excel_sheets(dfs, save_path, header=True, index=False):
+    writer = pd.ExcelWriter(save_path, engine='xlsxwriter')
+    for sheet_name, df in dfs:
+        df.to_excel(writer, sheet_name=sheet_name, header=header, index=index)
+    writer.save()
+    
+    
+def df_float2percent(df: pd.DataFrame, digits=2, min_num=None, max_num=None):
+    """
+    将表中的小数变成百分数
+    Args:
+        df: 需要转换的表
+        digits: 转换后保留几位有效数字
+        min_num: 仅对大于等于min_num小于等于max_num的数字进行处理,None代表不使用该参数
+        max_num: 仅对大于等于min_num小于等于max_num的数字进行处理,None代表不使用该参数
+    Returns: df
+    """
+    if min_num is None:
+        min_num = -float("inf")
+    if max_num is None:
+        max_num = float("inf")
+
+    def _df_float2percent(cell):
+        if pd.isnull(cell):
+            return cell
+        elif isinstance(cell, int):
+            return str(cell)
+        elif isinstance(cell, float):
+            if min_num <= cell <= max_num:
+                return "{}%".format(round(cell * 100, digits))
+            elif cell == int(cell):
+                return str(int(cell))
+            else:
+                return str(cell)
+        else:
+            return str(cell)
+    df = df.applymap(lambda x: _df_float2percent(x))
+    return df
+    
+    
 def get_equal_rate_1(str1, str2):
     # 判断相似度的方法，用到了difflib库
     return difflib.SequenceMatcher(None, str1, str2).quick_ratio()
@@ -867,12 +1228,28 @@ def get_equal_rate_1(str1, str2):
 
 # -------------常用的生成器----------------------
 def run_time(func):
-    def wapper(*args, **kwargs):
+    def _run_time(*args, **kwargs):
         begin_time = time.time()
         res = func(*args, **kwargs)
         print("函数 %s 运行时间为：%.4f" % (func.__name__, time.time()-begin_time))
         return res
-    return wapper
+    return _run_time
+    
+
+def is_executed(key):
+    """
+    当多次调用该方法时，无需执行，直接返回self.ks_r中记录的方法结果，因此要避免不同方法使用同一个命名
+    在多方案抽取时，可以避免不同方案中的相同规则多次执行，造成的运算资源浪费（空间换时间）
+    """
+    def is_executed1(func):
+        def is_executed2(self, *args, **kwargs):
+            # print(func)
+            if key not in self.ks_r.keys():
+                self.ks_r[key] = func(self, *args, **kwargs)
+            return self.ks_r[key]
+        return is_executed2
+    return is_executed1
+
 
 # -------------pandas操作----------------------	
 # 二层遍历

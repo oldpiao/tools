@@ -1,8 +1,15 @@
+# -----------git常见问题与解答总结------------
+github代理：https://github.com.ipaddress.com/
 廖雪峰git：https://www.liaoxuefeng.com/wiki/896043488029600/900003767775424
 查看所有分支：https://www.it1352.com/796040.html
 git本地代码回滚：https://www.cnblogs.com/-constructor/p/12268021.html
+建立仓库管理项目：https://cloud.tencent.com/developer/article/1504684
+Git忽略文件.gitignore的使用：https://www.jianshu.com/p/a09a9b40ad20
+Git私有项目clong报错：https://blog.csdn.net/cjhxydream/article/details/95448424
+git删除远程文件夹或文件的方法：https://www.cnblogs.com/xusir/p/4111723.html
+Git 两分支之间合并部分文件：https://blog.csdn.net/zhichaosong/article/details/102833858
 
-
+# -----------基础操作------------
 git log  # 查看日志
 git reflog  # 查看日志
 git reset --hard 7d72d974a9ed718dc1f50194879d4409a9f5db4b  # 找到需要回滚的commit
@@ -16,14 +23,93 @@ gitk master origin/master origin/model_choice  # 查看指定支线
 gitk --all  # 查看所有支线
 
 git branch  # 查看支线树
-git pull
-git push
-git push -u origin model_choice
-git commit -m "模型选择支线完成"
-git add .
+git pull  # 从远程仓库拉取代码
+git push  # 提交代码到远程仓库
+git push -u origin model_choice  # 提交代码到指定仓库
+git commit -m "模型选择支线完成"  # 提到代码到本地仓库
+
+git add .  # 添加当前目录中的文件到git，在旧版本中使用该命令无法删除git远程文件
+git add --all  # 添加所有文件到git，该命令在提交时可以将远程库中的文件一起删除
+
+# -----------分支操作------------
 git merge model_choice  # 合并支线model_choice到当前
+git push  # 合并支线后记得上传
 git branch -d dev  # 删除分支
 
-git switch -c model_choice  # 创建支线
-git switch model_choice  # 进入支线
+git switch -c model_choice  # 创建支线（新版git）
+git switch model_choice  # 进入支线（新版git）
+git checkout -b 分支名  # 创建切换分支（老版git）
+git push --set-upstream origin 分支名  # 创建远程分支
+git checkout 分支名  # 切换分支
+
 git push --set-upstream origin add_feature  # 当前分支add_feature没有上游分支。要推送当前分支并将远程端设置为上游
+
+git branch -m 新的分支名  # 分支重命名
+
+
+# -----------创建本地项目并推到远端------------
+git init
+git add .
+git commit -m ""  # 首次会要求设置用户名邮箱
+
+# -----------建立远端仓库------------
+git remote add origin 远程仓库地址  # 关联远程仓库
+git push --set-upstream origin master  # 首次执行需要加后面的参数
+
+# 先建立远程仓库再建立本地项目
+git clone 远程仓库地址
+# 在其中编写程序，或将项目内容拷贝进去
+
+
+# -----------文件比对------------
+git diff
+git diff --name-only  # 只看文件名
+git status
+git log
+git remote -v  # 查看远程仓库地址
+
+
+# -----------文件过滤------------
+文件过滤-上传到远程仓库时：
+在项目下添加一个【.gitignore】文件可以用于过滤文件，在向远程仓库上传时会忽略这些文件
+	+ 一般用于过滤.idea/  logs/   *.log  __pycache__/  data/  等
+	+ 写法：一行代表一个规则，可以使用通配符，代表文件或目录
+	
+文件过滤-不同分支合并时：
+在项目下添加一个【.gitattributes】文件可以用于在分支间合并时过滤文件
+	+ 一般用于配置文件，不同的分支用法不同配置不同
+	+ 从文件内规则的写法看还可以实现其他功能，但没有深究
+	+ 写法：start_uwsgi.sh merge=ours
+		+ 意义：在做【merge】操作时不将文件【start_uwsgi.sh】合并过去
+
+
+
+# -----------git项目管理------------
+分支：
+	master  # 主分支，release测试没问题的合并到master
+	develope  # 开发分支，每个开发开发的内容测试没问题合并到develop，【测试环境使用该分支】
+	release  # 版本分支，阶段性的版本发布，develop准备分支开发完就合并到该分支【POC环境使用该分支】
+		+ 如果POC环境测试有问题，直接在该分支上修改，并同步到develop分支
+	各自名字的分支  # 各自的开发分支，在该分支上开发、测试，测试通过后合并到develop分支（如果有testing分支合并到testing分支），并通知其他分将更新内容拉取到各自的分支
+		+ 如果在服务器上测试，一定注意使用不同的端口号测试，避免冲突
+		+ 上传代码时只传自己模块下的更新内容，避免冲突
+		+ 如对项目公共部分有更新，一定要提醒其他人，避免冲突
+	testing  # 测试分支，算法与开发工作不同步，develop部署后用于开发测试了，因此重建一个测试分支用于算法测试，挂载在develop上
+	tag  # release分支在POC上测试没有问题后会打tag，预防后续需要某个历史版本
+		
+每个开发的任务:
+	在develop分支上再建立一个自己的分支，独立测试，
+	每次有更新后测试完成就push上去，再marge到develop分支，
+	通知我们有更新（我们会合并到自己的分支上），
+	再在测试环境重新启动服务,在前端测试下你的接口.
+	
+	
+# -----------一些坑------------
+git上clone文件到window会把\n变成\r\n，此时如果再用pycharm同步到服务器执行，会导致一些.sh脚本文件无法使用
+	原因：
+		+ https://blog.csdn.net/github_30605157/article/details/56680990
+		+ git的推荐策略中有对换行符的处理
+	解：
+		+ vim XX.sh
+		+ :set ff=unix
+	

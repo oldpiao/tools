@@ -1,0 +1,54 @@
+=========ES命令基础，参考资料===================
+【ES命令基础】https://www.cnblogs.com/zhangyi0331/p/9357058.html
+【ES（三）：ES条件查询、排序】https://blog.csdn.net/zhoushimiao1990/article/details/104052376
+
+=========基本概念===============================
+【ES库】：ES数据库本质是一个索引库，但也可以直接存放数据，数据以多层嵌套的json结构存储，每一层都想相当于一层索引，
+	+ 可以从头对整个索引下的内容检索，也可以制定到某个索引下检索
+【索引】：相当于关系型数据库中的库或表，也是字面意思的索引，最外层的索引就是库内层索引（doc）就是表
+【doc】：内层索引
+
+=========在命令行执行ES命令=====================
+curl =XGET http://localhost:9200/_cat/indices?v
+
+=========在Kibana执行ES命令=====================
+GET _cat/indices?v
+
+=========常用ES命令=============================
+GET _cat/indices?v  # 查看索引库
+GET /_cat/allocation?v  # 查询磁盘占用
+GET /_cat/shards?v  # 查询索引的磁盘占用
+
+
+# 全量查询 
+GET synonyms_dic/doc_synonyms_dic/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+# 模糊查询
+GET robot/_search
+{
+  "query": {
+    "match": {
+      "question": "查询专管员"
+    }
+  }
+}
+
+# 精确查询
+GET robot/_search
+{
+  "query": {
+    "term": {
+      "question": "查询专管员"
+    }
+  }
+}
+
+# 临时解决内存不足问题
+PUT /_all/_settings
+{"index.blocks.read_only_allow_delete": false}
+

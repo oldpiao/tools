@@ -1,0 +1,89 @@
+=========docker基本概念：类比git与虚拟机==============
++ 【仓库】：相当于git，一个存储了很多个【镜像】的镜像库，本地可以有本地仓库，也可以从远程仓库下载镜像
++ 【镜像】：相当于一个虚拟机镜像或一个git上的项目，每个都是一个单独的环境（centos/ubuntu/...）,内部根据需要配置各种程序
+	+ 镜像通过【image_name+tag】或【image_id】唯一标识，但使用时略有不同
++ 【容器】：相当于一个正在运行的虚拟机，由镜像生成，可以停止，启动，保存（commit）成新的镜像
+	+ 容器通过【container_ID】唯一标识
+
+========docker操作流程=========================
++【下载镜像】：【pull】从远程仓库拉取一个镜像（或使用本地镜像）
++【启动容器】：【run】从该镜像创建一个容器，相当于启动一个虚拟机
++【配置容器】：在容器中配置项目需要的环境、代码等
++【保存容器】：【commit】成一个新的镜像，方便迁移
++【保存镜像】：【save】镜像为tar包方便迁移
++【加载镜像】：【load】加载tar包到新环境中
++ 【启动服务】：【run】配置端口映射，挂载目录，启动容器，启动容器内的服务
+
+========安装docker=========================
+1.1	docker设置yum源
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+1.2	安装指定版本
+yum list docker-ce --showduplicates | sort -r  # 查询版本列表
+yum install -y docker-ce-19.03.9  # 指定版本安装
+
+1.3	启动docker
+systemctl start docker.service
+
+1.4	验证docker安装是否成功（有client和service两部分表示成功）
+docker version
+
+========docker管理=========================
+	+ docker pull  # 从仓库拉取镜像
+		+ docker pull mysql:5.7.20
+	+ docker run  # 从镜像生成（运行）一个容器
+		+ docker run --name mynginx -d mysql:5.7.20  # 详见下例
+			+ -d  # 后台启动
+			+ -p 6666:6666  # 设置端口映射
+			+ -v [宿主机路径]:[docker路径]  # 将宿主机目录挂载在docker中
+			+ -it  # 以命令行模式打开（进入docker进行服务启动或配置）
+			+ mysql:5.7.20  # 镜像image_name:tag 也可以用image_id启动
+			+ /bin/bash  # 以命令行模式打开（进入docker进行服务启动或配置）
+	+ docker commit  # 从容器保存成一个镜像
+		+ docker commit [container_ID] docker/lua
+	+ docker save  # 保存镜像为tar包
+		+ docker save -o rocketmq.tar rocketmq 
+			+ -o：指定保存的镜像的名字；
+			+ rocketmq.tar：保存到本地的镜像名称；
+			+ rocketmq：镜像名字，通过"docker images"查看
+	+ docker load  # 加载一个tar包镜像到本地仓库
+		+ docker load < 文件名  # 注意【<】符号
+
+========docker基础命令=========================
+docker images  # 查看全部镜像
+docker ps  # 查看正在运行的容器
+docker ps -a  # 查看所有容器
+
+# 从镜像生成（运行）一个容器
+docker run -d -it -p 6666:6666 -v /var/run/dbus:/var/run/dbus -v /dev/disk/by-uuid:/dev/disk/by-uuid -v /opt/yufei.tan/docker_test/data:/mnt/data 52020da95c36(镜像id或者名称) /bin/bash
+docker attach 186faabdc9e9（id值）  # 运行对应docker镜（未使用过）
+Ctrl+P+Q  # 推出容器，不停止（容器内执行）
+exit  # 推出容器，并停止（容器内执行）
+
+docker exec -it [container_ID] /bin/bash  # 进入一个正在运行的容器
+docker container stop [container_ID]  # 停止容器
+docker container rm [container_ID]  # 删除容器
+docker commit [container_ID] [image_name]:[images_tag]  # 从容器保存成一个镜像
+docker save -o 镜像文件名.tar [镜像唯一标识]  # 保存镜像到tar包
+docker load < 镜像文件  # 载入一个镜像
+docker rmi [镜像唯一标识]  # 删除镜像（有时需要用id有时需要用image+tag）
+
+
+========docker其他命令=========================
+docker rename 原容器名称 新容器名称  # 容器重命名
+
+# 镜像重命名
+docker tag IMAGEID(镜像id) REPOSITORY:TAG（仓库：标签）  # 建立新镜像
+docker rmi [原镜像唯一标识]  # 删除旧镜像（有时需要用id有时需要用image+tag）
+
+
+========docker使用经验=========================
+基本思路：为了避免docker过大，且为了保持灵活性，应尽量少的向docker中打包，仅保留最基本的配置即可
+	+ 在Python环境配置时：
+		+ 仅安装Anaconda
+		+ 用到的虚拟环境通过【软链接】链接到【挂载的目录】下，在宿主机上配置虚拟环境
+			+ 在docker容器中进行如下操作：
+			+ mv /root/anaconda3/envs /root/anaconda3/envs.bak
+			+ ln -s /opt/docker_datas /root/anaconda3/envs
+	+ 项目代码：项目代码放在【挂载的目录】下，在宿主机上配置（这样日志也不会写到容器里）
+	+ 其他：仅安装最基本的软件，可供使用即可：lsof、vim等

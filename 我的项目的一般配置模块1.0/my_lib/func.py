@@ -8,6 +8,7 @@ import difflib
 import tempfile
 import subprocess
 import colorsys
+import hashlib
 
 import requests
 from bs4 import BeautifulSoup
@@ -15,6 +16,13 @@ from win32com import client as wc
 import pywintypes
 
 import pandas as pd
+
+
+def md5_id(text: str):
+    """MD5加密，可用于生成id"""
+    m = hashlib.md5()
+    m.update(text.encode("utf-8"))
+    return m.hexdigest()
 
 
 
@@ -189,6 +197,24 @@ class MyJSON2(object):
             else:
                 f2.writelines(lines[:n]+lines[n+1:])
         return json.loads(lines[n])
+
+
+def read_json_lines(f_path, to_dict=False):
+    with open(f_path, 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+    if to_dict:
+        for line in lines:
+            yield json.loads(line.strip())
+    for line in lines:
+        yield line.strip()
+
+
+def write_json_lines(datas, save_path, is_dict=True):
+    if is_dict:
+        datas = [json.dumps(data, ensure_ascii=False) for data in datas]
+    datas_str = "\n".join(datas)
+    with open(save_path, 'w', encoding='utf-8') as f:
+        f.write(datas_str)
 
 
 def get_doc(doc_file, word, remove_doc=False, retry=True):
@@ -696,6 +722,19 @@ def deal_excel(df):
     return df
 
 
+def read_excel(excel_path, header=0, index_col=None):
+    dfs = pd.ExcelFile(excel_path)
+    for sheet_name in dfs.sheet_names:
+        yield sheet_name, dfs.parse(sheet_name, header=header, index_col=index_col)
+
+
+def to_excel_sheets(dfs, save_path, header=True, index=False):
+    writer = pd.ExcelWriter(save_path, engine='xlsxwriter')
+    for sheet_name, df in dfs:
+        df.to_excel(writer, sheet_name=sheet_name, header=header, index=index)
+    writer.save()
+    
+    
 def get_equal_rate_1(str1, str2):
     # 判断相似度的方法，用到了difflib库
     return difflib.SequenceMatcher(None, str1, str2).quick_ratio()
@@ -703,12 +742,12 @@ def get_equal_rate_1(str1, str2):
 
 # -------------常用的生成器----------------------
 def run_time(func):
-    def wapper(*args, **kwargs):
+    def _run_time(*args, **kwargs):
         begin_time = time.time()
         res = func(*args, **kwargs)
         print("函数 %s 运行时间为：%.4f" % (func.__name__, time.time()-begin_time))
         return res
-    return wapper
+    return _run_time
 
 # -------------pandas操作----------------------	
 # 二层遍历

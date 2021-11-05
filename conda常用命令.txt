@@ -1,0 +1,6 @@
+conda list
+conda env list
+conda info -e
+conda update conda
+
+conda create -n your_env_name python=x.x

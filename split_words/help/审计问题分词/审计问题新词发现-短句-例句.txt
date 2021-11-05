@@ -1,0 +1,32 @@
+n/SC@not DJ@nn
+	+ 项目管理/n/不规范/SC@not
+	
+_^(SC@)?v?n_/_v+?/SC@not DJ@nn  # 旧
+_^(SC@)?v?n_/_v*?/SC@not DJ@nn  # 新
+	+ 资金/n/到位/v/不及时/SC@not
+	+ 责任/n/不落实/SC@not
+	+ 专项资金/n/使用/v/管理/vn/不规范/SC@not  ☆
+	+ 项目概算/SC@n/审批/v/不及时/SC@not  ☆	
+	# 新增匹配
+	+ 所属单位/n/资产/n/管理/vn/不严/a
+	+ 管理/vn/职责/n/不/d/明确/ad
+	+ 建设/vn/管理/vn/不善/v
+	+ 援助/vn/机制/n/不断完善/l
+	+ 招投标/j/工作/vn/不/d/规范/n
+	+ 基本/n/信息/n/不/d/一致/d
+	
+_v+/SC@not DJ@nvn
+	+ 归属/v/不合理/SC@not
+	+ 管理/vn/不规范/SC@not
+	+ 标准规定/l/不/d/明晰/a/  # l和不联合使用的例子
+	
+SC@wei/_(^|@)[vn]_+/a* DJ@wei
+	+ 未/d/及时/c/予以/v/清理/a
+	+ 未/d/纳入/v/主管部门/n/统一/vn/管理/vn
+	+ 未/d/及时/c/征收/v/入库/n
+	
+_(^|@)[v]_+/SC@wei DJ@wei
+	+ 收入/v/未/d/作为/v  # 匹配出错的示例
+	+ 投资/vn/未/d/入账/v
+	
+	

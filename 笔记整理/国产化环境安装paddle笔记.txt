@@ -1,0 +1,12 @@
+ARM架构编译安装，具体流程见下链接
+ARM架构安装paddlepaddle: https://www.paddlepaddle.org.cn/install/quick?docurl=/documentation/docs/zh/install/compile/arm-compile.html
+
+
+问题1:第8步【执行cmake】时报错：【python module google.protobuf is not found】
+	+ 操作：pip install protobuf
+	+ 来源：https://zhuanlan.zhihu.com/p/41497011
+问题2:第9步编译时报错【make TARGET=ARMV8 -j$(nproc)】
+	+ 原因是从GitHub下载文件超时，目前没有找到好的解决办法，最终从同事那得到一个编译好了的paddlepaddle.whl包
+
+安装LAC：依然需要编译
+	+ 文档：https://blog.csdn.net/qq_36411874/article/details/87981286

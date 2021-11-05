@@ -1,0 +1,32 @@
+ll -sh  # 查看文件大小
+lsof -i:6667  # 查看端口启用情况
+pwdx 进程号  # 查看进程
+df -h  # 查看磁盘空间
+
+==========压缩==================
+tar -zcvf renwolesshel.tar.gz /renwolesshel  # 压缩
+tar -zxvf fenci.py.tar.gz -C pythontab/  # 解压文件到指定文件夹
+gzip -d pythontab.gz  # 解压
+
+grep -r "redeem reward" /home/tom/  # linux 按文本内容查找所在的文件
+
+##只显示包含内容的文件名
+grep -r -l "查询内容"  文件目录
+
+lscpu  # 查看CPU信息
+cat /proc/cpuinfo  # 查看CPU信息
+
+更换hosts
+windows
+	C:\Windows\System32\drivers\etc\hosts，修改文件内容
+	windows + X -->windows Powershell 
+	>>> ipconfig /flushdns
+	
+linux
+	/etc/hosts，修改文件内容
+	>>> ipconfig /flushdns
+
+
+/sbin/iptables -I INPUT -p tcp --dport 8080 -j ACCEPT  # 设置端口监听
+
+

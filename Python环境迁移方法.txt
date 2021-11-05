@@ -1,0 +1,26 @@
+生成第三方库列表文件：
+参考【python 项目导出requirement.txt 环境列表】：https://blog.csdn.net/xingtianyao/article/details/109285453
+1.推荐方法
+# 安装
+pip install pipreqs
+# 在当前目录生成
+pipreqs . --encoding=utf8 --force
+# 会在当前目录下生成一个适配当前项目的requirements.txt文件
+2.不推荐的方法（会将环境中的依赖包全都加入）
+pip freeze > requirements.txt
+
+
+安装：
+# 在线安装项目依赖库
+pip install -r requirements.txt
+
+# 下载依赖库，用于离线安装环境（使用该方法时应保证当前环境与目标环境系统相同，Python版本相同，否则可能存在依赖包不匹配的情况）
+pip download -r requirements.txt -d ./pip_packages
+或
+pip download XXXX-XXX.tar.gz -d ./pip_packages
+
+# 离线安装
+pip install XXXX --no-index --find-links=./pip_packages
+
+# 更新安装
+pip install --upgrade text_mining --no-index --find-links=./pip_packages
