@@ -14,6 +14,7 @@ git log  # 查看日志
 git reflog  # 查看日志
 git reset --hard 7d72d974a9ed718dc1f50194879d4409a9f5db4b  # 找到需要回滚的commit
 git push -f  # 同时回滚远程
+git status  # 查看当前状态
 
 git clone  https://15522020095:password@gitee.com/picture-rabbit/event_extraction.git  # 使用用户名密码克隆远程项目到本地
 git clone -b dev5 https://git.coding.net/aiyongbao/tradepc.git   # 克隆支线
@@ -30,6 +31,9 @@ git commit -m "模型选择支线完成"  # 提到代码到本地仓库
 
 git add .  # 添加当前目录中的文件到git，在旧版本中使用该命令无法删除git远程文件
 git add --all  # 添加所有文件到git，该命令在提交时可以将远程库中的文件一起删除
+
+# -----------解决冲突------------
+git merge --abort  # 终止合并
 
 # -----------分支操作------------
 git merge model_choice  # 合并支线model_choice到当前

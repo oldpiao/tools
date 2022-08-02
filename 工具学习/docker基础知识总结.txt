@@ -57,10 +57,11 @@ docker ps -a  # 查看所有容器
 # 从镜像生成（运行）一个容器
 docker run -d -it -p 6666:6666 -v /var/run/dbus:/var/run/dbus -v /dev/disk/by-uuid:/dev/disk/by-uuid -v /opt/yufei.tan/docker_test/data:/mnt/data 52020da95c36(镜像id或者名称) /bin/bash
 docker attach 186faabdc9e9（id值）  # 运行对应docker镜（未使用过）
-Ctrl+P+Q  # 推出容器，不停止（容器内执行）
-exit  # 推出容器，并停止（容器内执行）
+Ctrl+P+Q  # 退出容器，不停止（容器内执行）
+exit  # 退出容器，并停止（容器内执行）
 
 docker exec -it [container_ID] /bin/bash  # 进入一个正在运行的容器
+docker restart [container_ID]  # 重启容器
 docker container stop [container_ID]  # 停止容器
 docker container rm [container_ID]  # 删除容器
 docker commit [container_ID] [image_name]:[images_tag]  # 从容器保存成一个镜像
