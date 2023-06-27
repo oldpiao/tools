@@ -15,6 +15,7 @@ git reflog  # 查看日志
 git reset --hard 7d72d974a9ed718dc1f50194879d4409a9f5db4b  # 找到需要回滚的commit
 git push -f  # 同时回滚远程
 git status  # 查看当前状态
+git remote -v  # 查看远程地址
 
 git clone  https://15522020095:password@gitee.com/picture-rabbit/event_extraction.git  # 使用用户名密码克隆远程项目到本地
 git clone -b dev5 https://git.coding.net/aiyongbao/tradepc.git   # 克隆支线
@@ -65,9 +66,11 @@ git clone 远程仓库地址
 # 在其中编写程序，或将项目内容拷贝进去
 
 
-# -----------文件比对------------
-git diff
+# -----------文件比对-解决冲突------
+git diff  # 查看冲突文件
 git diff --name-only  # 只看文件名
+git diff --name-only --diff-filter=U
+
 git status
 git log
 git remote -v  # 查看远程仓库地址

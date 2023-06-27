@@ -12,7 +12,7 @@
 +【保存容器】：【commit】成一个新的镜像，方便迁移
 +【保存镜像】：【save】镜像为tar包方便迁移
 +【加载镜像】：【load】加载tar包到新环境中
-+ 【启动服务】：【run】配置端口映射，挂载目录，启动容器，启动容器内的服务
++【启动服务】：【run】配置端口映射，挂载目录，启动容器，启动容器内的服务
 
 ========安装docker=========================
 1.1	docker设置yum源
@@ -65,7 +65,7 @@ docker restart [container_ID]  # 重启容器
 docker container stop [container_ID]  # 停止容器
 docker container rm [container_ID]  # 删除容器
 docker commit [container_ID] [image_name]:[images_tag]  # 从容器保存成一个镜像
-docker save -o 镜像文件名.tar [镜像唯一标识]  # 保存镜像到tar包
+docker save -o 镜像文件名.tar [镜像唯一标识]  # 保存镜像到
 docker load < 镜像文件  # 载入一个镜像
 docker rmi [镜像唯一标识]  # 删除镜像（有时需要用id有时需要用image+tag）
 

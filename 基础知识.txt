@@ -61,3 +61,7 @@ setuptools.setup(
 
 # 创建tar.gz包(sdist)和.whl包(bdist_wheel)
 python setup.py sdist bdist_wheel
+
+
+# django中redis配置有问题时的解决办法（密码验证不通过）
+	+ https://blog.csdn.net/weixin_44520259/article/details/93388802

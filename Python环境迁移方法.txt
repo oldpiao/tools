@@ -1,3 +1,7 @@
+
+# 创建虚拟环境:
+conda create -n pachong python==3.7.4
+
 生成第三方库列表文件：
 参考【python 项目导出requirement.txt 环境列表】：https://blog.csdn.net/xingtianyao/article/details/109285453
 1.推荐方法

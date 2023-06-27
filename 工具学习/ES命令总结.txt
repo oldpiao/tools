@@ -53,7 +53,7 @@ PUT /_all/_settings
 {"index.blocks.read_only_allow_delete": false}
 
 # 开放ES编辑权限
-curl -XPUT -H "Content-Type: application/json" http://localhost:9200/_all/_settings -d '{"index.blocks.read_only_allow_delete": null}'
+curl -XPUT -H "Content-Type: application/json" http://localhost:9201/_all/_settings -d '{"index.blocks.read_only_allow_delete": null}'
 
 # 删除ES中某个索引下的全部内容
 curl -XPOST '172.18.1.132:9203/robot/_delete_by_query?refresh&slices=5&pretty' -H 'Content-Type: application/json' -d'{"query": {"match_all": {}}}'

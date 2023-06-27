@@ -10,17 +10,30 @@ du -m | cut -d "/" -f 2 //看第二个/ 字符前的文字
 查看此文件夹有多少文件 /*/*/* 有多少文件
 du xmldb/
 du xmldb/*/*/* |wc -l
+==========系统信息=============
+cat /etc/redhat-release  # 查看系统版本
 
 ==========GPU==================
 https://blog.csdn.net/weiyumeizi/article/details/83035711
 nvidia-smi  # 查看显存使用情况
 lspci | grep -i vga  # 查看显卡信息
 lspci -v -s 00:0f.0  # 查看指定显卡的详细信息用以下指令
+watch -n 0.1 nvidia-smi  # 查看显存使用情况
+
 
 ==========CPU==================
 top  # 查看CPU使用情况
 lscpu  # 查看CPU信息
 cat /proc/cpuinfo  # 查看CPU信息
+E  # 调上方统计单位
+e  # 调下方列表单位
+shift+m按内存排序
+
+==========SCP==================
+scp -r -P 3222 root@172.18.1.84:/opt/anaconda3/envs/py3.6_commandSystem.tar.gz .
+
+scp /path/local_filename username@servername:/path  
+scp username@servername:/path/filename /tmp/local_destination
 
 ==========压缩==================
 tar -zcvf renwolesshel.tar.gz /renwolesshel  # 压缩
@@ -46,4 +59,5 @@ linux
 
 /sbin/iptables -I INPUT -p tcp --dport 8080 -j ACCEPT  # 设置端口监听
 
-
+==========命令==================
+nohup Command [ Arg … ] [　& ]  # 不挂起
