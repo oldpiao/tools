@@ -1,0 +1,27 @@
+# 快速日志
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s:%(message)s",
+    handlers=[logging.FileHandler("api.log"), logging.StreamHandler()],
+)
+
+logger = logging.getLogger()
+
+# 全局设置可调用显卡
+os.environ["CUDA_VISIBLE_DEVICES"] = "1,2"
+
+
+# 判断当前设备是否有GPU,全局设置数据加载到显存或内存是哪个
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+# 清理显存缓存
+def torch_gc():
+    if torch.cuda.is_available():
+        with torch.cuda.device("cuda"):
+            torch.cuda.empty_cache()
+            torch.cuda.ipc_collect()
+
+
+# 服务后台启动
+nohup uvicorn main:app --host 0.0.0.0 --port 8666 --reload  > log.txt 2>&1 &

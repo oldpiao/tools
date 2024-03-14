@@ -60,6 +60,7 @@ docker attach 186faabdc9e9（id值）  # 运行对应docker镜（未使用过）
 Ctrl+P+Q  # 退出容器，不停止（容器内执行）
 exit  # 退出容器，并停止（容器内执行）
 
+docker stop [container_ID]  # 停止正在运行的docker容器
 docker exec -it [container_ID] /bin/bash  # 进入一个正在运行的容器
 docker restart [container_ID]  # 重启容器
 docker container stop [container_ID]  # 停止容器

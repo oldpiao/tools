@@ -65,3 +65,13 @@ python setup.py sdist bdist_wheel
 
 # django中redis配置有问题时的解决办法（密码验证不通过）
 	+ https://blog.csdn.net/weixin_44520259/article/details/93388802
+	
+	
+	
+# ===excel常用命令=================
+
+# 查询并合并数据到一个单元格中
+=TEXTJOIN("；",TRUE,FILTER(事件场景表!H:H,事件场景表!F:F=A408))
+
+# 查询并合并数据到一个单元格中，查询条件为多个；查询条件为B2在[分类标签的D列]某个单元格中存在即可（无需全等）
+=IFERROR(TEXTJOIN("；",TRUE,FILTER('分类标签'!A:A,IFERROR(SEARCH(B2,'分类标签'!D:D),0)*('分类标签'!C:C=A2))), "")

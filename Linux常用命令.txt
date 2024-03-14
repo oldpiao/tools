@@ -10,6 +10,7 @@ du -m | cut -d "/" -f 2 //看第二个/ 字符前的文字
 查看此文件夹有多少文件 /*/*/* 有多少文件
 du xmldb/
 du xmldb/*/*/* |wc -l
+free -lh  # 查看内存资源
 ==========系统信息=============
 cat /etc/redhat-release  # 查看系统版本
 
@@ -29,11 +30,36 @@ E  # 调上方统计单位
 e  # 调下方列表单位
 shift+m按内存排序
 
+==========rsync（不好用）==================
+# 支持断点续传的拉命令
+rsync --partial --progress --rsh=ssh -P <port> user@remote:/path/to/source /path/to/destination
+
+--partial选项允许部分文件传输，即使传输中断也可以继续。
+--progress选项显示传输进度。
+--rsh=ssh选项指定使用SSH作为远程Shell。
+-P <port>用于指定远程服务器的端口号。将<port>替换为实际的端口号。
+user@remote:/path/to/source是远程服务器的用户名、主机地址和源文件的路径。
+/path/to/destination是本地目标目录的路径。
+
 ==========SCP==================
 scp -r -P 3222 root@172.18.1.84:/opt/anaconda3/envs/py3.6_commandSystem.tar.gz .
 
+scp -r -P 3222 models--TheBloke--Mixtral-8x7B-Instruct-v0.1-GPTQ root@10.0.32.161:/root/.cache/huggingface/hub/models--TheBloke--Mixtral-8x7B-Instruct-v0.1-GPTQ
+
 scp /path/local_filename username@servername:/path  
 scp username@servername:/path/filename /tmp/local_destination
+
+-r  # 断点续传（只有推命令有用）
+-r选项用于递归地复制目录和子目录。
+-C选项启用压缩，可以减少传输的数据量。
+-P <port>用于指定远程服务器的端口号。将<port>替换为实际的端口号。
+/path/to/source是本地源目录的路径。
+user@remote:/path/to/destination是远程服务器的用户名、主机地址和目标目录的路径。
+==========SSH==================
+ssh root@远程IP地址 -p 端口
+password:baifendian123
+
+sshpass -p "远程主机密码" ssh root@远程IP地址
 
 ==========压缩==================
 tar -zcvf renwolesshel.tar.gz /renwolesshel  # 压缩
@@ -45,6 +71,8 @@ grep -r "redeem reward" /home/tom/  # linux 按文本内容查找所在的文件
 ##只显示包含内容的文件名
 grep -r -l "查询内容"  文件目录
 
+# 批量匹配替换目录下文件中的指定字符串（未验证）
+find /path/to/directory -type f -exec sed -i 's/old_string/new_string/g' {} +
 
 更换hosts
 windows
@@ -61,3 +89,24 @@ linux
 
 ==========命令==================
 nohup Command [ Arg … ] [　& ]  # 不挂起
+
+==========定时任务==================
+crontab -l  # 查看当前用户的
+crontab -l  -u zzz  # 查看指定用户的定时任务
+crontab -e  # 新增或编辑定时任务
+crontab -r  # 删除当前的定时任务
+
+==========常用定时任务指令==================
+# 守护进程，每隔一秒检测接口是否存在，如果不存在执行启动脚本
+*/1 * * * * netstat -nultp | grep 9006 || /opt/BjNdbQA/robot/start.sh
+
+==========Linux开启一个后台运行程序==================
+tmux new -s  jiaming
+Ctrl b+d  # 退出会话
+tmux attach -t jiaming 
+
+==========常用复杂命令==================
+# 检查内存占用最高的10个进程和进程位置
+for pid in $(ps aux --sort=-%mem | awk 'NR>1 {print $2}' | head -n 10); do pwdx $pid; done
+# 检查内存占用最高的10个进程和内存占用情况和进程位置
+ps aux --sort=-%mem | head -n 11 | awk 'NR>1 {print $1, $2, $4}' | while read user pid mem; do cmd=$(lsof -p $pid -F n | grep '^n/' | head -n 1 | cut -c 2-); echo "$user $pid $mem $cmd"; done

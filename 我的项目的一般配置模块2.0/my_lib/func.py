@@ -1512,6 +1512,38 @@ class Singleton2(type):
 # json.dumps({}, ensure_ascii=False)
 
 
+# # -------------带缓存机制的参数、方法----------------------
+# # 使用缓存机制、动态规划实现设置方法，达到参数未改变时仅首次调用时会进行运算
+# # 使用时需要注意：参数都需要从方法入口传入，否则该参数变化不会引发重新计算
+# # 着重注意：传入的参数如果是类实例化对象，该实例的参数变化也不会引起重新计算，因此应该慎重使用
+# import time
+# import functools
+# 
+# 
+# class A(object):
+#     def __init__(self):
+#         self.bb = None
+# 
+#     @functools.lru_cache()
+#     def _b(self, bb):
+#         time.sleep(2)
+#         return bb
+# 
+#     @property
+#     def b(self):
+#         return self._b(self.bb)
+# 
+# 
+# def ceshi():
+#     a = A()
+#     t1 = time.time()
+#     for i in range(10):
+#         if i % 3 == 0:
+#             a.bb = i
+#         t2 = time.time()
+#         print(i, a.b, a.bb, t2 - t1)
+#         t1 = t2
+
 if __name__ == '__main__':
     print(join_url('http://baidu.com', 'aaa'))
     print(join_url('http://baidu.com', '/aaa'))
