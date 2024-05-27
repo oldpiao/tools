@@ -33,9 +33,6 @@ git commit -m "模型选择支线完成"  # 提到代码到本地仓库
 git add .  # 添加当前目录中的文件到git，在旧版本中使用该命令无法删除git远程文件
 git add --all  # 添加所有文件到git，该命令在提交时可以将远程库中的文件一起删除
 
-# -----------解决冲突------------
-git merge --abort  # 终止合并
-
 # -----------分支操作------------
 git merge model_choice  # 合并支线model_choice到当前
 git push  # 合并支线后记得上传
@@ -65,6 +62,18 @@ git push --set-upstream origin master  # 首次执行需要加后面的参数
 git clone 远程仓库地址
 # 在其中编写程序，或将项目内容拷贝进去
 
+# -----------fork项目管理------------
+git remote add upstream <原始项目的 URL>  # 添加一个远程引用（可以将远程项目更新引入当前项目）
+git remote rm upstream <原始项目的 URL>  # 删除一个远程引用
+git fetch upstream  # 获取原始项目的更新，并将它们存储在你的本地仓库中
+git merge upstream/master  # 将原始项目的更新合并到你的本地分支中
+git push upstream master  # 将本地更新推送到远程仓库
+
+说明：同时管理多个远程项目
+上例中upstream是我们添加的额外远程仓库，默认远程仓库为“origin”，在与远程仓库交互时可以通过该参数控制访问的是哪个远程仓库
+
+# -----------解决冲突------------
+git merge --abort  # 终止合并
 
 # -----------文件比对-解决冲突------
 git diff  # 查看冲突文件

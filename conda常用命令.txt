@@ -2,7 +2,9 @@
 中国科学技术大学（亲测最好用）: https://pypi.mirrors.ustc.edu.cn/simple
 豆瓣：http://pypi.douban.com/simple/
 阿里云：http://mirrors.aliyun.com/pypi/simple/
-my huggingface download model token: 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
+
+# 选择显卡
+os.environ["CUDA_VISIBLE_DEVICES"] = "3，4"
 
 conda list
 conda env list
@@ -49,6 +51,15 @@ pip download -r requirements.txt  -d ./python_packages --python-version 3.9 --on
 # 使用本地源安装包
 pip install -r requirements.txt --no-index --find-links=./python_packages/ 
 
+# 安装自建包
+# 以开发方式安装：创建软连接，随时修改
+pip3 install --editable . 命令用于在本地开发和测试 Python 包时安装包。
+
+# 生成发行版
+pip install setuptools wheel  # 安装环境
+python setup.py bdist_wheel  # 发行版源码包
+pip install dist/<package_name>-<version>.whl  # 发行版编译包
+
 
 # 常用环境安装方式记录
 ## django环境相关
@@ -57,18 +68,27 @@ pip install requests -i https://pypi.tuna.tsinghua.edu.cn/simple/  # 2.31.0
 pip install django-cors-headers==3.6.0 -i https://pypi.tuna.tsinghua.edu.cn/simple/
 pip install django-db-reconnect==0.0.1 -i https://pypi.tuna.tsinghua.edu.cn/simple/
 pip install uwsgi==2.0.18 -i https://pypi.tuna.tsinghua.edu.cn/simple/  # 需要在root环境下安装，如果安装失败可以尝试离线安装
+	+ conda install -c conda-forge libpython-static  # 如果安装失败，使用此命令更新环境，会解决找不到libpython3.8m.a的问题
+	+ 安装完成后使用时提示缺少链接库，按此链接添加操作：https://app.yinxiang.com/fx/b334fa7c-0399-49c5-b288-32b940ddbf7e
+	+ 注：uwsgi=2.0.18在python<=3.7中安装无问题，但也会提示缺少链接库
+	+ 注：uwsgi=2.0.18在python>=3.8中安装会提示找不到libpythonX.Xm.a,在3.8上验证成功
 
 ## 一般环境
 pip install opencc -i https://pypi.tuna.tsinghua.edu.cn/simple/  # 1.1.6
     + pip install opencc-python-reimplemented -i https://pypi.tuna.tsinghua.edu.cn/simple/  # ARM环境直接装opencc好像装不上，可以装这个
 
 ## 模型环境
+pip install ltp -i https://pypi.mirrors.ustc.edu.cn/simple 
+
 pip install --upgrade tensorflow-gpu==1.15 -i https://pypi.tuna.tsinghua.edu.cn/simple/
 pip install --upgrade tensorflow==1.15 -i https://pypi.tuna.tsinghua.edu.cn/simple/
 	+ 1.15版本是1中的稳定版
+
 pip install paddlepaddle-gpu==2.3.2.post116 -f https://www.paddlepaddle.org.cn/whl/linux/mkl/avx/stable.html
 pip install paddlepaddle==2.3.2 -i https://mirror.baidu.com/pypi/simple
 	+ 一个旧版的paddle，新版的有些功能与旧版不兼容，项目上要注意用的哪个版本
+
+pip install paddlenlp==2.4.1 -i https://mirror.baidu.com/pypi/simple
 
 ## pytorch（命令从官网获取，源换成国内源）
 pip install torch torchvision torchaudio -i https://mirrors.tuna.tsinghua.edu.cn

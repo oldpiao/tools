@@ -652,6 +652,25 @@ def mycopypath(src_path, dst_path):
                 shutil.copy(src_file, dst_path)
                 print(src_file)
 
+
+def mycopypath(src_path, dst_path):
+    """复制文件夹"""
+    if not os.path.exists(src_path):
+        logger.info("%s not exist!" % src_path)
+        return False
+    if not os.path.exists(dst_path):
+        os.makedirs(dst_path)
+    # root 所指的是当前正在遍历的这个文件夹的本身的地址
+    # dirs 是一个 list，内容是该文件夹中所有的目录的名字(不包括子目录)
+    # files 同样是 list, 内容是该文件夹中所有的文件(不包括子目录)
+    for root, dirs, files in os.walk(src_path):
+        for file in files:
+            src_file = os.path.join(root, file)
+            shutil.copy(src_file, dst_path)
+    logger.info(f"copy {src_path} -> {dst_path}")
+    return True
+    
+
 def save_file(data, file, mode='w'):
     """保存文件"""
     fpath, fname = os.path.split(file)  # 分离文件名和路径
@@ -1287,14 +1306,13 @@ def to_excel_sheets(dfs, save_path, header=True, index=False):
 
 def update_excel_sheet(deal_sheet_name, df, f_path, f_save_path):
     dfs = pd.ExcelFile(f_path)
-    writer = pd.ExcelWriter(f_save_path, engine='xlsxwriter')
-    for sheet_name in dfs.sheet_names:
-        if sheet_name == deal_sheet_name:
-            df.to_excel(writer, sheet_name=sheet_name, header=True, index=False)
-        else:
-            each_table = dfs.parse(sheet_name, header=None, index_col=None)
-            each_table.to_excel(writer, sheet_name=sheet_name, header=False, index=False)
-    writer.save()    
+    with pd.ExcelWriter(f_save_path) as writer:
+        for sheet_name in dfs.sheet_names:
+            if sheet_name == deal_sheet_name:
+                df.to_excel(writer, sheet_name=sheet_name, header=True, index=False)
+            else:
+                each_table = dfs.parse(sheet_name, header=None, index_col=None)
+                each_table.to_excel(writer, sheet_name=sheet_name, header=False, index=False)
 
 
 def read_df(f_path, sheet_name=None):
