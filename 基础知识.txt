@@ -75,3 +75,5 @@ python setup.py sdist bdist_wheel
 
 # 查询并合并数据到一个单元格中，查询条件为多个；查询条件为B2在[分类标签的D列]某个单元格中存在即可（无需全等）
 =IFERROR(TEXTJOIN("；",TRUE,FILTER('分类标签'!A:A,IFERROR(SEARCH(B2,'分类标签'!D:D),0)*('分类标签'!C:C=A2))), "")
+
+

@@ -63,8 +63,8 @@ git clone 远程仓库地址
 # 在其中编写程序，或将项目内容拷贝进去
 
 # -----------fork项目管理------------
-git remote add upstream <原始项目的 URL>  # 添加一个远程引用（可以将远程项目更新引入当前项目）
-git remote rm upstream <原始项目的 URL>  # 删除一个远程引用
+git remote add upstream <原始项目的 URL>  # 添加一个远程引用（upstream为本地定义的远程仓库名）（可以将远程项目更新引入当前项目）
+git remote rm upstream  # 删除一个远程引用
 git fetch upstream  # 获取原始项目的更新，并将它们存储在你的本地仓库中
 git merge upstream/master  # 将原始项目的更新合并到你的本地分支中
 git push upstream master  # 将本地更新推送到远程仓库

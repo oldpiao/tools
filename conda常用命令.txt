@@ -20,7 +20,8 @@ conda remove -n conda-old --all  # 删除虚拟环境
 # jupyter环境配置
 ## 一劳永逸版方案：base环境安装，虚拟环境安装ipython内核，base环境启动jupyter内核，base环境启动jupyter
 conda activate base  # 在base环境安装jupyter与ipykernel
-conda install jupyter ipykernel
+conda install nb_conda_kernels
+# conda install jupyter ipykernel
 conda activate env_XXX  # 在需要使用的虚拟环境安装ipykernel
 conda install ipykernel
 conda activate base  # 回到base环境，在工作路径下执行jupyter启动命令
@@ -39,6 +40,7 @@ pip freeze > requirements.txt
 方法二：只生成单个项目中的使用到的安装包
 pip install pipreqs
 pipreqs .
+pipreqs --use-local .   # 使用本地环境，不会联网
 
 pip install -r requirements.txt -i https://pypi.mirrors.ustc.edu.cn/simple
 
@@ -67,11 +69,20 @@ pip install Django==3.0.3 -i https://pypi.tuna.tsinghua.edu.cn/simple/
 pip install requests -i https://pypi.tuna.tsinghua.edu.cn/simple/  # 2.31.0
 pip install django-cors-headers==3.6.0 -i https://pypi.tuna.tsinghua.edu.cn/simple/
 pip install django-db-reconnect==0.0.1 -i https://pypi.tuna.tsinghua.edu.cn/simple/
-pip install uwsgi==2.0.18 -i https://pypi.tuna.tsinghua.edu.cn/simple/  # 需要在root环境下安装，如果安装失败可以尝试离线安装
+pip install uwsgi==2.0.18 -i https://pypi.tuna.tsinghua.edu.cn/simple/  # 需要在root环境下安装
 	+ conda install -c conda-forge libpython-static  # 如果安装失败，使用此命令更新环境，会解决找不到libpython3.8m.a的问题
 	+ 安装完成后使用时提示缺少链接库，按此链接添加操作：https://app.yinxiang.com/fx/b334fa7c-0399-49c5-b288-32b940ddbf7e
 	+ 注：uwsgi=2.0.18在python<=3.7中安装无问题，但也会提示缺少链接库
 	+ 注：uwsgi=2.0.18在python>=3.8中安装会提示找不到libpythonX.Xm.a,在3.8上验证成功
+
+## arm环境安装uwsgi：
+步骤：以下步骤可能并非每个都必须，但按这个步骤执行可以使用
+	+ 先在系统环境中安装uwsgi（适配好的，不会报错）
+		+ yum install python3-uwsgi
+	+ 将之前适配过的环境中安装的uwsgi拷贝到当前虚拟环境中（上述安装过程没有下述第2、3个文件）
+		+ cp /opt/anaconda3/envs/py37_django3/bin/uwsgi .
+		+ cp /opt/anaconda3/envs/py37_django3/lib/python3.7/site-packages/uwsgidecorators.py .
+		+ cp -r /opt/anaconda3/envs/py37_django3/lib/python3.7/site-packages/uWSGI-2.0.20.dist-info/ .
 
 ## 一般环境
 pip install opencc -i https://pypi.tuna.tsinghua.edu.cn/simple/  # 1.1.6
@@ -93,3 +104,15 @@ pip install paddlenlp==2.4.1 -i https://mirror.baidu.com/pypi/simple
 ## pytorch（命令从官网获取，源换成国内源）
 pip install torch torchvision torchaudio -i https://mirrors.tuna.tsinghua.edu.cn
 https://mirrors.bfsu.edu.cn/pypi/web/packages/da/6a/7fb9d82db4568834ff6d4df2fe3b143de4ed65a3f8f93e7daed703626cb6/torch-2.1.2-cp311-cp311-manylinux1_x86_64.whl
+
+
+arm环境适配心得：
++ 越旧的版本越不好找相关的编译包
++ 尽量用如果一个包没有编译版本，可以用【conda search XXX】查一下，也需conda有编译好的（不过一般没这好事）
++ 一些包会有好心人编译好的版本放在GitHub上，但需要碰运气
++ pip、conda都找不到的包，可以用【yum install python3-XXX】安装，会安装到系统自带的python3中，去包存放位置拷贝对应的包到环境中即可
+	+ 检查是否安装：/usr/bin/python3 -m pip list
+	+ 包存放位置：/usr/lib64/python3.7/site-packages/
+	+ 注：系统自带的是python3.7，因此这些包大概率是适配3.7的
+	+ 注：好多编译失败的包都可以用这种方式解决
++ 至今为止，我没有编译安装成功过任何包。。。。	
